@@ -13,11 +13,14 @@
 .EXAMPLE
   .\install-reminder.ps1 -PracticeDir D:\leetcode-practice -Time 09:00
 .EXAMPLE
+  .\install-reminder.ps1 -PracticeDir D:\leetcode-practice -Time 19:30 -Days weekdays
+.EXAMPLE
   .\install-reminder.ps1 -Uninstall
 #>
 param(
     [string]$PracticeDir,
     [string]$Time = '09:00',
+    [string]$Days = 'daily',   # 'daily', 'weekdays', or a list like 'Mon,Wed,Fri'
     [switch]$Uninstall,
     [switch]$TestNow
 )
@@ -58,12 +61,28 @@ New-ItemProperty -Path $regPath -Name IconBackgroundColor -Value 'FF7C3AED' -Pro
 # 2) Daily scheduled task (current user, no admin)
 $at = [datetime]::ParseExact($Time, 'HH:mm', $null)
 $action = New-ScheduledTaskAction -Execute $py -Argument "`"$script`" daily --dir `"$PracticeDir`" --notify" -WorkingDirectory $PracticeDir
-$trigger = New-ScheduledTaskTrigger -Daily -At $at
+$dayNames = @{ mon = 'Monday'; tue = 'Tuesday'; wed = 'Wednesday'; thu = 'Thursday'; fri = 'Friday'; sat = 'Saturday'; sun = 'Sunday' }
+switch -Regex ($Days.Trim().ToLower()) {
+    '^(daily|everyday|all)$' { $trigger = New-ScheduledTaskTrigger -Daily -At $at; $daysLabel = 'every day' }
+    '^weekdays?$' {
+        $trigger = New-ScheduledTaskTrigger -Weekly -WeeksInterval 1 -DaysOfWeek Monday, Tuesday, Wednesday, Thursday, Friday -At $at
+        $daysLabel = 'Mon-Fri'
+    }
+    default {
+        $picked = foreach ($d in ($Days -split '[,\s]+' | Where-Object { $_ })) {
+            $k = $d.Substring(0, [Math]::Min(3, $d.Length)).ToLower()
+            if (-not $dayNames.ContainsKey($k)) { throw "Unknown day '$d'. Use e.g. -Days 'Mon,Wed,Fri', 'weekdays' or 'daily'." }
+            $dayNames[$k]
+        }
+        $trigger = New-ScheduledTaskTrigger -Weekly -WeeksInterval 1 -DaysOfWeek ($picked | Select-Object -Unique) -At $at
+        $daysLabel = ($picked | Select-Object -Unique) -join ', '
+    }
+}
 $settings = New-ScheduledTaskSettingsSet -StartWhenAvailable -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -ExecutionTimeLimit (New-TimeSpan -Minutes 5)
 Register-ScheduledTask -TaskName $taskName -Action $action -Trigger $trigger -Settings $settings `
     -Description 'Picks today''s LeetCode problem from your progress, refreshes the dashboard, and shows a reminder.' -Force | Out-Null
 
-Write-Host "Daily reminder set for $Time."
+Write-Host "Reminder set for $Time, $daysLabel."
 Write-Host "  Practice folder : $PracticeDir"
 Write-Host "  Python          : $py"
 Write-Host "  Remove later    : .\install-reminder.ps1 -Uninstall"

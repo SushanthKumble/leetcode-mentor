@@ -26,7 +26,7 @@ Ask **one question per message**. Offer short answer options so the user can rep
 4. **Experience.** "Roughly how many LeetCode problems have you solved, and when did you last practice regularly?"
 5. **LeetCode username** (optional). "Want me to check your LeetCode solves automatically? If so, what's your public username? (You can skip this.)" If they give one, run `python <scripts>/mentor.py status --dir .` after saving it, or use the profile counts if the check returns them. Mention what you see in one line: "Your profile shows 42 solved: 30 Easy, 12 Medium, mostly arrays and strings."
 6. **Previous solves.** Ask this whenever the user has *any* prior experience (see the next section).
-7. **Reminder** (optional, Windows). "Want a daily reminder notification? What time suits you?" If yes, set it up only after the plan is confirmed, following SKILL.md's reminder rules.
+7. **Reminder** (optional, Windows). "Want a reminder notification on your practice days? What time suits you?" Use the same days as their plan (for example `-Days weekdays` for Mon–Fri). If yes, set it up only after the plan is confirmed, following SKILL.md's reminder rules.
 
 ## Previous solves: three options
 

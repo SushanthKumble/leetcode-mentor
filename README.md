@@ -257,7 +257,7 @@ A problem is **mastered** only when you've solved it independently, explained it
 
 **Dashboard:** `leetcode-progress.html` in your practice folder, rebuilt after every session. Ask *"show my progress"*, or open the file directly.
 
-**Reminder (Windows):** `install-reminder.ps1` creates a per-user scheduled task (no admin rights) that picks the problem, refreshes the dashboard and shows the notification each day. If your computer was off at that time, it runs at the next start. Remove it with `install-reminder.ps1 -Uninstall`.
+**Reminder (Windows):** `install-reminder.ps1` creates a per-user scheduled task (no admin rights) that picks the problem, refreshes the dashboard and shows the notification: every day by default, or only on your practice days with `-Days weekdays` or `-Days "Mon,Wed,Fri"`. If your computer was off at that time, it runs at the next start. Remove it with `install-reminder.ps1 -Uninstall`.
 
 **macOS / Linux:** `mentor.py daily --notify` sends a basic notification. Schedule it with cron:
 ```cron
@@ -311,7 +311,7 @@ You rarely need these, because the mentor runs them for you. Run them from your 
 | `python $S/mentor.py sync --dir .` | Records your recent Accepted LeetCode solves |
 | `python $S/mentor.py import-prior --dir . --file pasted.txt` | Imports a pasted list of previously solved problems |
 | `python $S/mentor.py status --dir .` | Shows today's pick, streak and revisions as JSON |
-| `install-reminder.ps1 -PracticeDir <dir> -Time HH:MM [-TestNow]` | Sets up the daily Windows reminder |
+| `install-reminder.ps1 -PracticeDir <dir> -Time HH:MM [-Days weekdays|Mon,Wed,Fri] [-TestNow]` | Sets up the Windows reminder (every day by default) |
 | `install-reminder.ps1 -Uninstall` | Removes the reminder |
 
 ## Repository layout
