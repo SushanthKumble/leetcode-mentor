@@ -1,0 +1,17 @@
+# Personal practice data — never publish
+leetcode-log.md
+**/leetcode-log.md
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.zip
+leetcode-progress.html
+.leetcode-mentor-toast.json
+__pycache__/
+
+# demo data used for README screenshots (not personal)
+!docs/demo/leetcode-log.md
+!docs/demo/leetcode-progress.html
